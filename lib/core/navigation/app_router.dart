@@ -29,6 +29,9 @@ class AppRouter {
     AppRoutes.myVacationBalance: 'Mi saldo de vacaciones',
     AppRoutes.requestTypes: 'Tipos de solicitud',
     AppRoutes.account: 'Cuenta y seguridad',
+    AppRoutes.attendanceAreaReport: 'Asistencia por área',
+    AppRoutes.vacationBalances: 'Saldos de vacaciones',
+    AppRoutes.reviewRequest: 'Revisar solicitud',
   };
 
   /// Creates the route for [settings].

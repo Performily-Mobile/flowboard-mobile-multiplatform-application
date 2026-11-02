@@ -32,4 +32,5 @@ class FlowboardIcons {
   static const IconData chevronRight = Icons.chevron_right;
   static const IconData gift = Icons.card_giftcard_outlined;
   static const IconData favorite = Icons.favorite_outline;
+  static const IconData notifications = Icons.notifications_none_outlined;
 }

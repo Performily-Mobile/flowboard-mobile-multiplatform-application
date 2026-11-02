@@ -22,6 +22,13 @@ class AppRoutes {
   static const String requestTypes = '/request-types';
   static const String account = '/account';
 
+  /// Reports and detail screens opened from the dashboard; their bounded contexts register them.
+  static const String attendanceAreaReport = '/attendance-area-report';
+  static const String vacationBalances = '/vacation-balances';
+
+  /// Review of a pending request; receives the request identifier as the route argument.
+  static const String reviewRequest = '/review-request';
+
   /// Temporary screen; receives the title as the route argument.
   static const String pendingFeature = '/pending';
 }
