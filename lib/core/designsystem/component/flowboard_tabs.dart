@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flowboard/core/designsystem/theme/app_glass.dart';
 
-/// Pill-shaped tab selector used for every set of tabs and single-choice switch of the app.
+/// Pill-shaped glass tab selector used for every set of tabs and single-choice switch.
 ///
 /// Up to three short options share the width equally; with more options or longer labels the
-/// row scrolls horizontally so no label gets cut.
+/// row scrolls horizontally so no label gets cut. The selected option is a raised pill of
+/// stronger glass.
 class FlowboardTabs<T> extends StatelessWidget {
   /// Creates the selector with its [options], the [selected] one, the [onSelect] callback and
   /// [labelOf], which returns the text of each option. [enabled] false ignores taps.
@@ -27,7 +29,7 @@ class FlowboardTabs<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
+    final GlassTokens tokens = GlassTokens.of(context);
     final List<String> labels = options.map(labelOf).toList();
     final bool fillWidth = options.length <= _maxEqualWidthOptions &&
         labels.every((String label) => label.length <= _maxEqualWidthLabel);
@@ -46,12 +48,13 @@ class FlowboardTabs<T> extends StatelessWidget {
     );
 
     return DecoratedBox(
-      decoration: ShapeDecoration(color: scheme.surfaceContainerHigh, shape: const StadiumBorder()),
+      decoration: ShapeDecoration(
+        color: tokens.track,
+        shape: const StadiumBorder(),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: fillWidth
-            ? row
-            : SingleChildScrollView(scrollDirection: Axis.horizontal, child: row),
+        child: fillWidth ? row : SingleChildScrollView(scrollDirection: Axis.horizontal, child: row),
       ),
     );
   }
@@ -91,7 +94,7 @@ class FlowboardIndexTabs extends StatelessWidget {
   }
 }
 
-/// One option of the selector: a pill that turns into a raised chip when selected.
+/// One option of the selector: a pill that turns into a raised glass chip when selected.
 class _TabPill extends StatelessWidget {
   const _TabPill({
     required this.text,
@@ -109,6 +112,7 @@ class _TabPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
+    final GlassTokens tokens = GlassTokens.of(context);
 
     return Semantics(
       button: true,
@@ -118,18 +122,15 @@ class _TabPill extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: enabled ? onTap : null,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           alignment: Alignment.center,
           decoration: ShapeDecoration(
-            color: selected ? scheme.surface : scheme.surfaceContainerHigh,
+            color: selected ? tokens.surface : Colors.transparent,
             shape: const StadiumBorder(),
-            shadows: selected
-                ? const <BoxShadow>[
-                    BoxShadow(color: Color(0x1F000000), blurRadius: 2, offset: Offset(0, 1)),
-                  ]
-                : null,
+            shadows: selected ? tokens.raised : null,
           ),
           child: Text(
             text,

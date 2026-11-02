@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flowboard/core/designsystem/icon/flowboard_icons.dart';
+import 'package:flowboard/core/designsystem/theme/app_glass.dart';
 import 'package:flowboard/core/designsystem/theme/app_shapes.dart';
 
-/// Pill-shaped search box shared by every list of the app.
+/// Solid pill-shaped search box shared by every list of the app.
+///
+/// It is an input, so it stays opaque with a hairline edge: no blur and no color bleeding from
+/// the content behind it.
 class FlowboardSearchField extends StatefulWidget {
   /// Creates the search box.
   ///
@@ -45,42 +49,51 @@ class _FlowboardSearchFieldState extends State<FlowboardSearchField> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme scheme = Theme.of(context).colorScheme;
-    const InputBorder noBorder = OutlineInputBorder(
+    final GlassTokens tokens = GlassTokens.of(context);
+    final InputBorder border = OutlineInputBorder(
       borderRadius: AppShapes.pill,
-      borderSide: BorderSide.none,
+      borderSide: BorderSide(color: tokens.border),
     );
 
-    return ValueListenableBuilder<TextEditingValue>(
-      valueListenable: _controller,
-      builder: (BuildContext context, TextEditingValue value, Widget? child) {
-        return TextField(
-          controller: _controller,
-          onChanged: widget.onQueryChange,
-          maxLines: 1,
-          decoration: InputDecoration(
-            hintText: widget.placeholder,
-            filled: true,
-            fillColor: scheme.surfaceContainerHigh,
-            prefixIcon: const Icon(FlowboardIcons.search),
-            suffixIcon: value.text.isEmpty
-                ? null
-                : IconButton(
-                    tooltip: 'Limpiar búsqueda',
-                    icon: const Icon(FlowboardIcons.close),
-                    onPressed: () {
-                      _controller.clear();
-                      widget.onQueryChange('');
-                    },
-                  ),
-            constraints: const BoxConstraints(minHeight: 52),
-            border: noBorder,
-            enabledBorder: noBorder,
-            focusedBorder: noBorder,
-            disabledBorder: noBorder,
-          ),
-        );
-      },
+    final Widget field = ValueListenableBuilder<TextEditingValue>(
+        valueListenable: _controller,
+        builder: (BuildContext context, TextEditingValue value, Widget? child) {
+          return TextField(
+            controller: _controller,
+            onChanged: widget.onQueryChange,
+            maxLines: 1,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: widget.placeholder,
+              filled: true,
+              fillColor: tokens.surface,
+              prefixIcon: const Icon(FlowboardIcons.search),
+              suffixIcon: value.text.isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: 'Limpiar búsqueda',
+                      icon: const Icon(FlowboardIcons.close),
+                      onPressed: () {
+                        _controller.clear();
+                        widget.onQueryChange('');
+                      },
+                    ),
+              constraints: const BoxConstraints(minHeight: 52),
+              border: border,
+              enabledBorder: border,
+              disabledBorder: border,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: AppShapes.pill,
+                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2),
+              ),
+            ),
+          );
+        },
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(borderRadius: AppShapes.pill, boxShadow: tokens.raised),
+      child: field,
     );
   }
 }

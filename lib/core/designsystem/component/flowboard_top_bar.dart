@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flowboard/core/designsystem/component/glass_surface.dart';
 import 'package:flowboard/core/designsystem/icon/flowboard_icons.dart';
+import 'package:flowboard/core/designsystem/theme/app_glass.dart';
 import 'package:flowboard/core/designsystem/theme/app_spacing.dart';
 
 /// Single title bar used by every screen of the app.
 ///
 /// It is placed at the top of the screen body, above an [Expanded] content, and handles the
-/// status bar inset by itself. A round tonal button leads the bar when [onBack] or [onClose]
-/// is given; screens opened from the bottom bar omit both.
+/// status bar inset by itself. The bar is transparent over the glass background; a round glass
+/// button leads it when [onBack] or [onClose] is given, and screens opened from the bottom bar
+/// simply omit both.
 class FlowboardTopBar extends StatelessWidget {
   /// Creates the bar.
   ///
@@ -32,27 +35,27 @@ class FlowboardTopBar extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final ColorScheme scheme = theme.colorScheme;
 
-    return Material(
-      color: scheme.surface,
-      child: SafeArea(
-        bottom: false,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 72),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.screenHorizontal,
-              vertical: AppSpacing.m,
-            ),
-            child: Row(
-              children: <Widget>[
-                if (onBack != null) ...<Widget>[
-                  _NavigationButton(icon: FlowboardIcons.arrowBack, description: 'Volver', onPressed: onBack!),
-                  const SizedBox(width: AppSpacing.m),
-                ] else if (onClose != null) ...<Widget>[
-                  _NavigationButton(icon: FlowboardIcons.close, description: 'Cerrar', onPressed: onClose!),
-                  const SizedBox(width: AppSpacing.m),
-                ],
-                Expanded(
+    return SafeArea(
+      bottom: false,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 72),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.screenHorizontal,
+            vertical: AppSpacing.m,
+          ),
+          child: Row(
+            children: <Widget>[
+              if (onBack != null) ...<Widget>[
+                GlassCircleButton(icon: FlowboardIcons.arrowBack, tooltip: 'Volver', onPressed: onBack!),
+                const SizedBox(width: AppSpacing.m),
+              ] else if (onClose != null) ...<Widget>[
+                GlassCircleButton(icon: FlowboardIcons.close, tooltip: 'Cerrar', onPressed: onClose!),
+                const SizedBox(width: AppSpacing.m),
+              ],
+              Expanded(
+                child: Semantics(
+                  header: true,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,9 +76,9 @@ class FlowboardTopBar extends StatelessWidget {
                     ],
                   ),
                 ),
-                ...actions,
-              ],
-            ),
+              ),
+              ...actions,
+            ],
           ),
         ),
       ),
@@ -83,29 +86,56 @@ class FlowboardTopBar extends StatelessWidget {
   }
 }
 
-/// Round tonal button at the start of a [FlowboardTopBar].
-class _NavigationButton extends StatelessWidget {
-  const _NavigationButton({
+/// Round glass button with an icon, used by the top bar and for trailing actions.
+///
+/// The visible circle is 40 dp, but the tap area keeps the 48 dp minimum.
+class GlassCircleButton extends StatelessWidget {
+  /// Creates the button with its [icon], accessibility [tooltip] and [onPressed] action.
+  const GlassCircleButton({
+    super.key,
     required this.icon,
-    required this.description,
+    required this.tooltip,
     required this.onPressed,
   });
 
   final IconData icon;
-  final String description;
-  final VoidCallback onPressed;
+  final String tooltip;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
+    final GlassTokens tokens = GlassTokens.of(context);
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    return IconButton.filledTonal(
-      onPressed: onPressed,
-      tooltip: description,
-      icon: Icon(icon, size: 20),
-      style: IconButton.styleFrom(
-        fixedSize: const Size(40, 40),
-        backgroundColor: scheme.surfaceContainerHigh,
-        foregroundColor: scheme.onSurface,
+
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        button: true,
+        label: tooltip,
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Center(
+            child: GlassSurface(
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              fill: tokens.control,
+              sigma: tokens.blurSigma / 2,
+              shadows: tokens.raised,
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: onPressed,
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: Icon(icon, size: 20, color: scheme.onSurface),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
