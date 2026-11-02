@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flowboard/core/designsystem/theme/app_colors.dart';
+import 'package:flowboard/core/designsystem/theme/app_glass.dart';
 import 'package:flowboard/core/designsystem/theme/app_shapes.dart';
 import 'package:flowboard/core/designsystem/theme/app_typography.dart';
 
-/// Theme of the app: colors, typography and shapes.
+/// Theme of the app: colors, typography, shapes and the liquid glass material.
+///
+/// Scaffolds are transparent so the glass background painted behind every route shows through.
 class AppTheme {
   const AppTheme._();
 
   /// Light theme.
-  static ThemeData light() => _build(_lightScheme());
+  static ThemeData light() => _build(_lightScheme(), GlassTokens.light);
 
   /// Dark theme.
-  static ThemeData dark() => _build(_darkScheme());
+  static ThemeData dark() => _build(_darkScheme(), GlassTokens.dark);
 
   static ColorScheme _lightScheme() {
     return ColorScheme.fromSeed(seedColor: AppColors.primary).copyWith(
@@ -51,27 +54,30 @@ class AppTheme {
     );
   }
 
-  static ThemeData _build(ColorScheme scheme) {
+  static ThemeData _build(ColorScheme scheme, GlassTokens glass) {
     final ThemeData base = ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       textTheme: AppTypography.textTheme,
-      scaffoldBackgroundColor: scheme.surface,
+      scaffoldBackgroundColor: Colors.transparent,
       canvasColor: scheme.surface,
+    );
+    final TextTheme textTheme = base.textTheme.apply(
+      bodyColor: scheme.onSurface,
+      displayColor: scheme.onSurface,
     );
 
     return base.copyWith(
-      textTheme: base.textTheme.apply(
-        bodyColor: scheme.onSurface,
-        displayColor: scheme.onSurface,
-      ),
+      textTheme: textTheme,
       cardTheme: CardThemeData(
-        color: scheme.surfaceContainerLow,
+        color: glass.surface,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: const RoundedRectangleBorder(borderRadius: AppShapes.medium),
       ),
       inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: glass.surface,
         border: OutlineInputBorder(
           borderRadius: AppShapes.extraSmall,
           borderSide: BorderSide(color: scheme.outline),
@@ -79,6 +85,10 @@ class AppTheme {
         enabledBorder: OutlineInputBorder(
           borderRadius: AppShapes.extraSmall,
           borderSide: BorderSide(color: scheme.outline),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: AppShapes.extraSmall,
+          borderSide: BorderSide(color: scheme.outlineVariant),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: AppShapes.extraSmall,
@@ -88,19 +98,88 @@ class AppTheme {
           borderRadius: AppShapes.extraSmall,
           borderSide: BorderSide(color: scheme.error),
         ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: AppShapes.extraSmall,
+          borderSide: BorderSide(color: scheme.error, width: 2),
+        ),
       ),
-      chipTheme: ChipThemeData(shape: const StadiumBorder(), side: BorderSide(color: scheme.outlineVariant)),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(64, 52),
+          shape: const StadiumBorder(),
+          textStyle: textTheme.labelLarge,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size(64, 48),
+          shape: const StadiumBorder(),
+          backgroundColor: glass.surface,
+          side: BorderSide(color: scheme.outlineVariant),
+          textStyle: textTheme.labelLarge,
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(minimumSize: const Size(48, 48), textStyle: textTheme.labelLarge),
+      ),
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
+      ),
+      chipTheme: ChipThemeData(
+        shape: const StadiumBorder(),
+        backgroundColor: glass.surface,
+        selectedColor: scheme.secondaryContainer,
+        side: BorderSide(color: scheme.outlineVariant),
+        labelStyle: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w500),
+      ),
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll<Color>(glass.overlay),
+          surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+          elevation: const WidgetStatePropertyAll<double>(8),
+          shadowColor: WidgetStatePropertyAll<Color>(glass.shadow),
+          shape: WidgetStatePropertyAll<OutlinedBorder>(
+            RoundedRectangleBorder(
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
+              side: BorderSide(color: glass.border),
+            ),
+          ),
+          padding: const WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.symmetric(vertical: 6)),
+        ),
+      ),
+      menuButtonTheme: MenuButtonThemeData(
+        style: MenuItemButton.styleFrom(
+          minimumSize: const Size(160, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          textStyle: textTheme.bodyLarge,
+        ),
+      ),
       dialogTheme: DialogThemeData(
-        backgroundColor: scheme.surfaceContainerHigh,
+        backgroundColor: glass.overlay,
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.extraLarge),
+      ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
         shape: const RoundedRectangleBorder(borderRadius: AppShapes.extraLarge),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppShapes.extraLargeRadius)),
-        ),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        shape: RoundedRectangleBorder(borderRadius: AppShapes.large),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(color: scheme.onInverseSurface),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: scheme.secondaryContainer,
+        foregroundColor: scheme.onSecondaryContainer,
+        elevation: 2,
+        highlightElevation: 4,
+        extendedTextStyle: textTheme.labelLarge,
+        shape: const RoundedRectangleBorder(borderRadius: AppShapes.large),
       ),
       dividerTheme: DividerThemeData(
         color: scheme.outlineVariant.withValues(alpha: 0.5),
@@ -108,18 +187,19 @@ class AppTheme {
         thickness: 1,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: scheme.surfaceContainer,
+        backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
+        height: 68,
         indicatorColor: scheme.secondaryContainer,
-        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        labelTextStyle: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
           final bool selected = states.contains(WidgetState.selected);
-          return base.textTheme.labelMedium?.copyWith(
+          return textTheme.labelMedium?.copyWith(
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
             color: selected ? scheme.onSurface : scheme.onSurfaceVariant,
           );
         }),
-        iconTheme: WidgetStateProperty.resolveWith((states) {
+        iconTheme: WidgetStateProperty.resolveWith((Set<WidgetState> states) {
           return IconThemeData(
             color: states.contains(WidgetState.selected)
                 ? scheme.onSecondaryContainer
