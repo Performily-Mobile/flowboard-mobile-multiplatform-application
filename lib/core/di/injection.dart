@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:flowboard/core/navigation/feature_route_registry.dart';
+import 'package:flowboard/core/navigation/tab_switcher.dart';
 import 'package:flowboard/core/network/api_client.dart';
 import 'package:flowboard/core/session/current_employee_provider.dart';
 import 'package:flowboard/features/attendance/infrastructure/di/attendance_dependencies.dart';
@@ -22,6 +23,7 @@ void setupDependencies() {
   getIt.registerLazySingleton<ApiClient>(() => ApiClient(client: getIt<http.Client>()));
   getIt.registerLazySingleton<CurrentEmployeeProvider>(() => CurrentEmployeeProvider());
   getIt.registerLazySingleton<FeatureRouteRegistry>(() => FeatureRouteRegistry());
+  getIt.registerLazySingleton<TabSwitcher>(() => TabSwitcher());
 
   setupWorkspaceDependencies();
   setupAttendanceDependencies();

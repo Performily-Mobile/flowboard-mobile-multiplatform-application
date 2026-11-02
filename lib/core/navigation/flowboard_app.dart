@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flowboard/core/di/injection.dart';
 import 'package:flowboard/core/navigation/flowboard_bottom_bar.dart';
 import 'package:flowboard/core/navigation/tab_navigator.dart';
+import 'package:flowboard/core/navigation/tab_switcher.dart';
 import 'package:flowboard/core/navigation/top_level_destination.dart';
 import 'package:flowboard/core/session/current_employee_provider.dart';
 
@@ -30,6 +31,24 @@ class _FlowboardAppState extends State<FlowboardApp> {
   );
 
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getIt<TabSwitcher>().attach(_selectRoute);
+  }
+
+  @override
+  void dispose() {
+    getIt<TabSwitcher>().detach();
+    super.dispose();
+  }
+
+  /// Switches to the tab whose first screen is [route]; ignored when the role has no such tab.
+  void _selectRoute(String route) {
+    final int index = _destinations.indexWhere((TopLevelDestination destination) => destination.route == route);
+    if (index != -1) _onSelect(index);
+  }
 
   void _onSelect(int index) {
     _navigatorKeys[index].currentState?.popUntil((Route<dynamic> route) => route.isFirst);
