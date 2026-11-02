@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flowboard/core/designsystem/component/glass_background.dart';
+import 'package:flowboard/core/di/injection.dart';
 import 'package:flowboard/core/navigation/app_routes.dart';
+import 'package:flowboard/core/navigation/feature_route_registry.dart';
 import 'package:flowboard/core/navigation/more_page.dart';
 import 'package:flowboard/core/navigation/pending_feature_page.dart';
 
 /// Builds the page of every route.
 ///
-/// Each bounded context replaces its entries of [_pendingTitles] with its real screens as it
-/// is integrated; routes not integrated yet show a temporary screen.
+/// The bounded contexts resolve their own routes through the [FeatureRouteRegistry]; routes not
+/// integrated yet show a temporary screen. Every page is painted over the glass background.
 class AppRouter {
   const AppRouter._();
 
@@ -29,20 +32,26 @@ class AppRouter {
   };
 
   /// Creates the route for [settings].
+  ///
+  /// Routes are untyped so a page can close with a result (for example the id of a new record);
+  /// callers push them without a type argument and read the result as an [Object].
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    final Widget page = getIt<FeatureRouteRegistry>().resolve(settings) ?? _corePage(settings);
+    return MaterialPageRoute<dynamic>(
+      settings: settings,
+      builder: (BuildContext context) => GlassBackground(child: page),
+    );
+  }
+
+  static Widget _corePage(RouteSettings settings) {
     final String? name = settings.name;
-    final Widget page;
-
-    if (name == AppRoutes.more) {
-      page = const MorePage();
-    } else if (name == AppRoutes.pendingFeature) {
-      page = PendingFeaturePage(title: settings.arguments as String? ?? 'Sección');
-    } else if (name != null && _pendingTitles.containsKey(name)) {
-      page = PendingFeaturePage(title: _pendingTitles[name]!);
-    } else {
-      page = const PendingFeaturePage(title: 'Flowboard');
+    if (name == AppRoutes.more) return const MorePage();
+    if (name == AppRoutes.pendingFeature) {
+      return PendingFeaturePage(title: settings.arguments as String? ?? 'Sección');
     }
-
-    return MaterialPageRoute<void>(settings: settings, builder: (BuildContext context) => page);
+    if (name != null && _pendingTitles.containsKey(name)) {
+      return PendingFeaturePage(title: _pendingTitles[name]!);
+    }
+    return const PendingFeaturePage(title: 'Flowboard');
   }
 }
