@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flowboard/core/designsystem/component/flowboard_top_bar.dart';
+import 'package:flowboard/core/designsystem/component/glass_card.dart';
 import 'package:flowboard/core/designsystem/icon/flowboard_icons.dart';
-import 'package:flowboard/core/designsystem/theme/app_shapes.dart';
 import 'package:flowboard/core/designsystem/theme/app_spacing.dart';
 import 'package:flowboard/core/navigation/app_routes.dart';
 
-/// "Más" tab for HR: options grouped in two tonal blocks, "Gestión" and "Mi cuenta".
+/// "Más" tab for HR: options grouped in two glass blocks, "Gestión" and "Mi cuenta".
 class MorePage extends StatelessWidget {
   /// Creates the screen.
   const MorePage({super.key});
@@ -16,17 +16,18 @@ class MorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double bottomInset = MediaQuery.paddingOf(context).bottom;
     return Scaffold(
       body: Column(
         children: <Widget>[
           const FlowboardTopBar(title: 'Más'),
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 AppSpacing.screenHorizontal,
                 AppSpacing.xs,
                 AppSpacing.screenHorizontal,
-                AppSpacing.xl,
+                AppSpacing.xl + bottomInset,
               ),
               child: Column(
                 spacing: AppSpacing.sectionGap,
@@ -78,7 +79,7 @@ class _MoreItemData {
   final VoidCallback onTap;
 }
 
-/// Titled group of options shown inside a tonal card.
+/// Titled group of options shown inside a glass card.
 class _MoreSection extends StatelessWidget {
   const _MoreSection({required this.title, required this.items});
 
@@ -96,32 +97,29 @@ class _MoreSection extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(left: AppSpacing.xs),
-          child: Text(
-            title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: scheme.onSurfaceVariant,
+          child: Semantics(
+            header: true,
+            child: Text(
+              title,
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ),
         ),
-        SizedBox(
-          width: double.infinity,
-          child: Material(
-            color: scheme.surfaceContainerLow,
-            shape: const RoundedRectangleBorder(borderRadius: AppShapes.medium),
-            clipBehavior: Clip.antiAlias,
-            child: Column(
-              children: <Widget>[
-                for (int i = 0; i < items.length; i++) ...<Widget>[
-                  if (i > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 72, right: AppSpacing.l),
-                      child: Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.5)),
-                    ),
-                  _MoreItem(data: items[i]),
-                ],
+        GlassCard(
+          child: Column(
+            children: <Widget>[
+              for (int i = 0; i < items.length; i++) ...<Widget>[
+                if (i > 0)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 72, right: AppSpacing.l),
+                    child: Divider(height: 1, color: scheme.outlineVariant.withValues(alpha: 0.5)),
+                  ),
+                _MoreItem(data: items[i]),
               ],
-            ),
+            ],
           ),
         ),
       ],
@@ -147,12 +145,7 @@ class _MoreItem extends StatelessWidget {
         child: Row(
           spacing: AppSpacing.l,
           children: <Widget>[
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(color: scheme.secondaryContainer, shape: BoxShape.circle),
-              child: Icon(data.icon, size: 20, color: scheme.onSecondaryContainer),
-            ),
+            GlassIconBadge(icon: data.icon),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

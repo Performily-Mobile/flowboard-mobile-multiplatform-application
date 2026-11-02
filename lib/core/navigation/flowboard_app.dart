@@ -6,10 +6,11 @@ import 'package:flowboard/core/navigation/tab_navigator.dart';
 import 'package:flowboard/core/navigation/top_level_destination.dart';
 import 'package:flowboard/core/session/current_employee_provider.dart';
 
-/// Root widget of the signed-in app: bottom bar by role plus one navigator per tab.
+/// Root widget of the signed-in app: floating glass bottom bar by role plus one navigator per tab.
 ///
 /// HR opens on the dashboard and employees on their home. Selecting a tab always shows its
-/// first screen: the screens opened inside it are discarded.
+/// first screen: the screens opened inside it are discarded. The tabs extend behind the bar, and
+/// the bar height is added to their bottom padding so no content stays hidden.
 class FlowboardApp extends StatefulWidget {
   /// Creates the shell.
   const FlowboardApp({super.key});
@@ -52,6 +53,8 @@ class _FlowboardAppState extends State<FlowboardApp> {
       canPop: false,
       onPopInvokedWithResult: _onBack,
       child: Scaffold(
+        extendBody: true,
+        backgroundColor: Colors.transparent,
         body: IndexedStack(
           index: _selectedIndex,
           children: <Widget>[
