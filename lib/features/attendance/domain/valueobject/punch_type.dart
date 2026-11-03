@@ -1,0 +1,4 @@
+enum PunchType {
+  checkIn,
+  checkOut,
+}
