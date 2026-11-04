@@ -20,7 +20,7 @@ abstract class AttendanceRepository {
   Future<AttendanceRecord> justify(
       int recordId, String reason, String? evidenceUrl);
 
-  Future<List>> areas();
+  void Future<List>> areas();
 
-  Future<List>> employees(String query);
+  void Future<List>> employees(String query);
 }
