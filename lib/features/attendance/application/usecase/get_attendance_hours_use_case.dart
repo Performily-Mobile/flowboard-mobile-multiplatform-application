@@ -1,4 +1,3 @@
-import 'package:flowboard/features/attendance/domain/entity/attendance_record.dart';
 import 'package:flowboard/features/attendance/domain/repository/attendance_repository.dart';
 
 class GetAttendanceHoursUseCase {
@@ -6,7 +5,7 @@ class GetAttendanceHoursUseCase {
 
   final AttendanceRepository repository;
 
-  Future> dynamic call(
+  Future<Map<String, dynamic>> call(
     int id,
     DateTime from,
     DateTime to,
