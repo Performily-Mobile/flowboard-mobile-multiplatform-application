@@ -369,7 +369,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   (e) => DropdownMenuItem(
                     value: (e['id'] as num).toInt(),
                     child: Text(
-                      '${e['fullName'] ?? ((e['firstName'] ?? '').toString() + ' ' + (e['lastName'] ?? '').toString())}',
+                      '${e['fullName'] ?? ('${e['firstName'] ?? ''} ${e['lastName'] ?? ''}')}',
                     ),
                   ),
                 )
@@ -386,7 +386,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         DropdownButtonFormField<int>(
           isExpanded: true,
           decoration: const InputDecoration(labelText: 'Área'),
-          value: selectedArea,
+          initialValue: selectedArea,
           items: areas
               .map(
                 (a) => DropdownMenuItem(
