@@ -6,7 +6,7 @@ class GetAttendanceHoursUseCase {
 
   final AttendanceRepository repository;
 
-  Future> call(
+  Future> dynamic call(
     int id,
     DateTime from,
     DateTime to,
