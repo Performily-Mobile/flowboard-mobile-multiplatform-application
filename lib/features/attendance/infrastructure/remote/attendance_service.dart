@@ -28,14 +28,14 @@ class AttendanceService {
         'workDate': date(day),
       })) as List<dynamic>;
 
-  Future> Future<Map<String, dynamic>> employeeHours(
+  Future<Map<String, dynamic>> employeeHours(
           int id, DateTime from, DateTime to) async =>
       (await client.get('attendance/reports/employees/$id/hours', query: {
         'from': date(from),
         'to': date(to),
       })) as Map<String, dynamic>;
 
-  Future> Future<Map<String, dynamic>> areaSummary(
+  Future<Map<String, dynamic>> areaSummary(
           int id, DateTime from, DateTime to) async =>
       (await client.get('attendance/reports/areas/$id', query: {
         'from': date(from),
@@ -51,7 +51,7 @@ class AttendanceService {
     return value is num ? value.toInt() : int.parse('$value');
   }
 
-  Future> Future<Map<String, dynamic>> justify(
+  Future<Map<String, dynamic>> justify(
           int id, String reason, String? url) async =>
       (await client.post('attendance/$id/justification', body: {
         'reason': reason,

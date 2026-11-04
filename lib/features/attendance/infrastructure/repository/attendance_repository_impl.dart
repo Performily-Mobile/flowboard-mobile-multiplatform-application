@@ -38,9 +38,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
       _records(await service.areaRecords(id, day));
 
   @override
-  Future@override
-  > @override
-  employeeHours(
+  Future<Map<String, dynamic>> employeeHours(
     int id,
     DateTime from,
     DateTime to,
@@ -48,9 +46,7 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
       service.employeeHours(id, from, to);
 
   @override
-  Future@override
-  > @override
-  areaSummary(
+  Future<Map<String, dynamic>> areaSummary(
     int id,
     DateTime from,
     DateTime to,
@@ -69,18 +65,14 @@ class AttendanceRepositoryImpl implements AttendanceRepository {
       AttendanceMapper.fromJson(await service.justify(id, reason, url));
 
   @override
-  Future<List>@override
-  > @override
-  areas() async => (await service.areas())
+  Future<List<Map<String, dynamic>>> areas() async => (await service.areas())
       .map(
         (dynamic e) => e as Map<String, dynamic>,
       )
       .toList();
 
   @override
-  Future<List>@override
-  > @override
-  employees(String q) async =>
+  Future<List<Map<String, dynamic>>> employees(String q) async =>
       (await service.employees(q))
           .map(
             (dynamic e) => e as Map<String, dynamic>,

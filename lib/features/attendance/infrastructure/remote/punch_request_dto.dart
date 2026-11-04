@@ -1,6 +1,6 @@
 class PunchRequestDto {
   const PunchRequestDto(this.data);
-
+  
   final Map<String, dynamic> data;
 
   factory PunchRequestDto.fromJson(Map<String, dynamic> json) =>
@@ -11,3 +11,4 @@ class PunchRequestDto {
   dynamic get employeeId => data['employeeId'];
   dynamic get type => data['type'];
   dynamic get punchedAt => data['punchedAt'];
+  }
