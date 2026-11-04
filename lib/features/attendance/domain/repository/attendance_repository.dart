@@ -9,10 +9,10 @@ abstract class AttendanceRepository {
 
   Future<List<AttendanceRecord>> areaRecords(int areaId, DateTime day);
 
-  Future> employeeHours(
+  Future<Map<String, dynamic>> employeeHours(
       int employeeId, DateTime from, DateTime to);
 
-  Future> areaSummary(
+  Future<Map<String, dynamic>> areaSummary(
       int areaId, DateTime from, DateTime to);
 
   Future<int> punch(int employeeId, String type);
@@ -20,7 +20,7 @@ abstract class AttendanceRepository {
   Future<AttendanceRecord> justify(
       int recordId, String reason, String? evidenceUrl);
 
-  void Future<List>> areas();
+  Future<List<Map<String, dynamic>>> areas();
 
-  void Future<List>> employees(String query);
+  Future<List<Map<String, dynamic>>> employees(String query);
 }
