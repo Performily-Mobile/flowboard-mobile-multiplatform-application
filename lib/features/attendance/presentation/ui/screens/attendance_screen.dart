@@ -20,7 +20,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   
   int tab = 0;
   int? selectedArea, selectedEmployee;
-  List> areas = [], employees = [];
+  List<Map<String, dynamic>> areas = [], employees = [];
   Map<String, dynamic>? summary;
   String? reportError;
   bool busy = false;

@@ -1,4 +1,4 @@
-import 'package0/flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class AttendanceSectionTabs extends StatelessWidget {
   const AttendanceSectionTabs({

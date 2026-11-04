@@ -1,4 +1,4 @@
-import 'package0/flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class AttendanceFilterDropdown extends StatelessWidget {
   const AttendanceFilterDropdown({
@@ -16,7 +16,7 @@ class AttendanceFilterDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DropdownButtonFormField<int>(
-        value: value,
+        initialValue: value,
         isExpanded: true,
         decoration: InputDecoration(labelText: label),
         items: items,
