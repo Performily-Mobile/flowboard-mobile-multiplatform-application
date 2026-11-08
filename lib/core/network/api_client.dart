@@ -18,17 +18,29 @@ class ApiClient {
   static const String defaultBaseUrl = 'https://flowboard-mobile-service.onrender.com/api/v1/';
 
   static const Duration _timeout = Duration(seconds: 60);
+
+  // TEMPORAL (solo para probar mientras no exista IAM en Flutter): token JWT del backend pasado con
+  // `flutter run --dart-define=FLOWBOARD_TOKEN=<token>`. Sin ese valor no se envía nada.
+  // Quitar estas líneas cuando se implemente el login.
+  static const String _temporaryToken = String.fromEnvironment('FLOWBOARD_TOKEN');
+
   static const Map<String, String> _headers = <String, String>{
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    if (_temporaryToken != '') 'Authorization': 'Bearer $_temporaryToken',
   };
 
   final http.Client _client;
   final Uri _baseUri;
 
   /// Sends a GET request and returns the decoded JSON body.
-  Future<dynamic> get(String path, {Map<String, dynamic>? query}) {
-    return _send(() => _client.get(_uri(path, query), headers: _headers));
+  ///
+  /// [headers] are added to the default ones; Payroll uses them to send `X-Employee-Id`.
+  Future<dynamic> get(String path, {Map<String, dynamic>? query, Map<String, String>? headers}) {
+    return _send(() => _client.get(
+          _uri(path, query),
+          headers: headers == null ? _headers : <String, String>{..._headers, ...headers},
+        ));
   }
 
   /// Sends a POST request with an optional JSON [body].
