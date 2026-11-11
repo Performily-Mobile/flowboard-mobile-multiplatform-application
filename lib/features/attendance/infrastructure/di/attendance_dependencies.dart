@@ -15,13 +15,21 @@ import 'package:flowboard/features/attendance/domain/repository/attendance_repos
 import 'package:flowboard/features/attendance/infrastructure/acl/workspace_attendance_directory_adapter.dart';
 import 'package:flowboard/features/attendance/infrastructure/remote/attendance_service.dart';
 import 'package:flowboard/features/attendance/infrastructure/repository/attendance_repository_impl.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_area_view_model.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_home_view_model.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_hours_view_model.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_records_view_model.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/employee_attendance_view_model.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/justify_attendance_view_model.dart';
+import 'package:flowboard/features/attendance/presentation/viewmodel/my_attendance_view_model.dart';
 import 'package:flowboard/features/workspace/application/usecase/get_areas_use_case.dart';
 import 'package:flowboard/features/workspace/application/usecase/get_employees_use_case.dart';
 
 /// Registers the dependencies of the Attendance bounded context.
 ///
-/// Services, repositories and use cases are singletons. The areas and the names of the employees
-/// come from the Workspace use cases, which are resolved when they are first used.
+/// Services, repositories and use cases are singletons; view models are created for each screen.
+/// The areas and the names of the employees come from the Workspace use cases, which are resolved
+/// when they are first used.
 void setupAttendanceDependencies() {
   getIt
     ..registerLazySingleton<AttendanceService>(() => AttendanceService(client: getIt<ApiClient>()))
@@ -58,5 +66,25 @@ void setupAttendanceDependencies() {
     ..registerLazySingleton<GetAreaHoursReportUseCase>(() => GetAreaHoursReportUseCase(
           repository: getIt<AttendanceRepository>(),
           peopleResolver: getIt<AttendancePeopleResolver>(),
+        ))
+    ..registerFactory<AttendanceHomeViewModel>(
+        () => AttendanceHomeViewModel(currentEmployeeProvider: getIt<CurrentEmployeeProvider>()))
+    ..registerFactory<MyAttendanceViewModel>(() => MyAttendanceViewModel(
+          getMyAttendance: getIt<GetMyAttendanceUseCase>(),
+          registerPunch: getIt<RegisterPunchUseCase>(),
+        ))
+    ..registerFactory<JustifyAttendanceViewModel>(
+        () => JustifyAttendanceViewModel(justifyAttendance: getIt<JustifyAttendanceUseCase>()))
+    ..registerFactory<AttendanceRecordsViewModel>(
+        () => AttendanceRecordsViewModel(getAttendanceRecords: getIt<GetAttendanceRecordsUseCase>()))
+    ..registerFactory<AttendanceAreaViewModel>(() => AttendanceAreaViewModel(
+          getAttendanceAreas: getIt<GetAttendanceAreasUseCase>(),
+          getAreaAttendanceReport: getIt<GetAreaAttendanceReportUseCase>(),
+        ))
+    ..registerFactory<EmployeeAttendanceViewModel>(
+        () => EmployeeAttendanceViewModel(getEmployeeAttendance: getIt<GetEmployeeAttendanceUseCase>()))
+    ..registerFactory<AttendanceHoursViewModel>(() => AttendanceHoursViewModel(
+          getAttendanceAreas: getIt<GetAttendanceAreasUseCase>(),
+          getAreaHoursReport: getIt<GetAreaHoursReportUseCase>(),
         ));
 }
