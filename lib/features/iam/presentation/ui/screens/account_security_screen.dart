@@ -88,11 +88,11 @@ class _AccountSecurityScreenState extends State<AccountSecurityScreen> {
               FlowboardTopBar(title: 'Cuenta y seguridad', onBack: () => Navigator.of(context).maybePop()),
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(
+                  padding: EdgeInsets.fromLTRB(
                     AppSpacing.screenHorizontal,
                     AppSpacing.xs,
                     AppSpacing.screenHorizontal,
-                    AppSpacing.fabClearance,
+                    AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
                   ),
                   children: <Widget>[
                     AccountProfileCard(

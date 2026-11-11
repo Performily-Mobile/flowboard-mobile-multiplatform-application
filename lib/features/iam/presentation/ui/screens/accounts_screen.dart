@@ -176,11 +176,11 @@ class _AccountsBody extends StatelessWidget {
       onRefresh: viewModel.load,
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
+        padding: EdgeInsets.fromLTRB(
           AppSpacing.screenHorizontal,
           AppSpacing.xs,
           AppSpacing.screenHorizontal,
-          AppSpacing.fabClearance,
+          AppSpacing.xl + MediaQuery.paddingOf(context).bottom,
         ),
         itemCount: state.accounts.length,
         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: AppSpacing.itemGap),
