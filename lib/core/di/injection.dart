@@ -7,6 +7,7 @@ import 'package:flowboard/core/session/current_employee_provider.dart';
 import 'package:flowboard/features/attendance/infrastructure/di/attendance_dependencies.dart';
 import 'package:flowboard/features/benefits/infrastructure/di/benefits_dependencies.dart';
 import 'package:flowboard/features/dashboard/infrastructure/di/dashboard_dependencies.dart';
+import 'package:flowboard/features/iam/infrastructure/di/iam_dependencies.dart';
 import 'package:flowboard/features/payroll/infrastructure/di/payroll_dependencies.dart';
 import 'package:flowboard/features/request/infrastructure/di/request_dependencies.dart';
 import 'package:flowboard/features/wellbeing/infrastructure/di/wellbeing_dependencies.dart';
@@ -25,6 +26,7 @@ void setupDependencies() {
   getIt.registerLazySingleton<FeatureRouteRegistry>(() => FeatureRouteRegistry());
   getIt.registerLazySingleton<TabSwitcher>(() => TabSwitcher());
 
+  setupIamDependencies();
   setupWorkspaceDependencies();
   setupAttendanceDependencies();
   setupRequestDependencies();
