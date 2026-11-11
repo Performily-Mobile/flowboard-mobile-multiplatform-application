@@ -34,14 +34,23 @@ import 'package:flowboard/features/request/infrastructure/remote/request_type_se
 import 'package:flowboard/features/request/infrastructure/repository/local_request_attachment_storage.dart';
 import 'package:flowboard/features/request/infrastructure/repository/request_repository_impl.dart';
 import 'package:flowboard/features/request/infrastructure/repository/request_type_repository_impl.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/my_requests_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/new_request_type_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/new_request_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/request_detail_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/request_types_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/requests_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/resolved_requests_view_model.dart';
+import 'package:flowboard/features/request/presentation/viewmodel/review_request_view_model.dart';
 import 'package:flowboard/features/workspace/application/usecase/get_employee_by_id_use_case.dart';
 import 'package:flowboard/features/workspace/application/usecase/get_employees_use_case.dart';
 
 /// Registers the dependencies of the Request bounded context.
 ///
-/// Services, repositories and use cases are singletons. The employee directory and the vacation
-/// balance read the Workspace and Benefits use cases, which are resolved when they are first used.
-/// The attachment storage is temporary (local) until the real storage is defined.
+/// Services, repositories and use cases are singletons; view models are created for each screen.
+/// The employee directory and the vacation balance read the Workspace and Benefits use cases, which
+/// are resolved when they are first used. The attachment storage is temporary (local) until the real
+/// storage is defined.
 void setupRequestDependencies() {
   getIt
     ..registerLazySingleton<RequestService>(() => RequestService(client: getIt<ApiClient>()))
@@ -122,5 +131,48 @@ void setupRequestDependencies() {
     ..registerLazySingleton<ChangeRequestTypeStatusUseCase>(
         () => ChangeRequestTypeStatusUseCase(repository: getIt<RequestTypeRepository>()))
     ..registerLazySingleton<DeleteRequestTypeUseCase>(
-        () => DeleteRequestTypeUseCase(repository: getIt<RequestTypeRepository>()));
+        () => DeleteRequestTypeUseCase(repository: getIt<RequestTypeRepository>()))
+    ..registerFactory<RequestsViewModel>(() => RequestsViewModel(
+          currentEmployeeProvider: getIt<CurrentEmployeeProvider>(),
+          getMyRequests: getIt<GetMyRequestsUseCase>(),
+          getPendingApprovals: getIt<GetPendingApprovalsUseCase>(),
+          getAllRequests: getIt<GetAllRequestsUseCase>(),
+          getRequestTypes: getIt<GetRequestTypesUseCase>(),
+          approveRequest: getIt<ApproveRequestUseCase>(),
+          rejectRequest: getIt<RejectRequestUseCase>(),
+        ))
+    ..registerFactory<MyRequestsViewModel>(() => MyRequestsViewModel(getMyRequests: getIt<GetMyRequestsUseCase>()))
+    ..registerFactory<NewRequestViewModel>(() => NewRequestViewModel(
+          getRequestTypes: getIt<GetRequestTypesUseCase>(),
+          getVacationAvailability: getIt<GetVacationAvailabilityUseCase>(),
+          getApproverPreview: getIt<GetApproverPreviewUseCase>(),
+          storeAttachment: getIt<StoreAttachmentUseCase>(),
+          submitRequest: getIt<SubmitRequestUseCase>(),
+        ))
+    ..registerFactory<RequestDetailViewModel>(() => RequestDetailViewModel(
+          currentEmployeeProvider: getIt<CurrentEmployeeProvider>(),
+          getRequest: getIt<GetRequestUseCase>(),
+          getRequestTypes: getIt<GetRequestTypesUseCase>(),
+          cancelRequest: getIt<CancelRequestUseCase>(),
+          resubmitRequest: getIt<ResubmitRequestUseCase>(),
+          storeAttachment: getIt<StoreAttachmentUseCase>(),
+        ))
+    ..registerFactory<ReviewRequestViewModel>(() => ReviewRequestViewModel(
+          currentEmployeeProvider: getIt<CurrentEmployeeProvider>(),
+          getRequest: getIt<GetRequestUseCase>(),
+          getRequestTypes: getIt<GetRequestTypesUseCase>(),
+          getVacationAvailability: getIt<GetVacationAvailabilityUseCase>(),
+          approveRequest: getIt<ApproveRequestUseCase>(),
+          rejectRequest: getIt<RejectRequestUseCase>(),
+          returnRequestForReview: getIt<ReturnRequestForReviewUseCase>(),
+        ))
+    ..registerFactory<ResolvedRequestsViewModel>(() =>
+        ResolvedRequestsViewModel(getResolvedTeamRequests: getIt<GetResolvedTeamRequestsUseCase>()))
+    ..registerFactory<RequestTypesViewModel>(() => RequestTypesViewModel(
+          getRequestTypes: getIt<GetRequestTypesUseCase>(),
+          changeRequestTypeStatus: getIt<ChangeRequestTypeStatusUseCase>(),
+          deleteRequestType: getIt<DeleteRequestTypeUseCase>(),
+        ))
+    ..registerFactory<NewRequestTypeViewModel>(
+        () => NewRequestTypeViewModel(createRequestType: getIt<CreateRequestTypeUseCase>()));
 }
