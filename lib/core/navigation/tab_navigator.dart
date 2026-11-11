@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flowboard/core/navigation/app_router.dart';
 
@@ -8,6 +10,9 @@ import 'package:flowboard/core/navigation/app_router.dart';
 ///
 /// The stack starts with the tab root only. The default behavior splits names such as
 /// `/employees` into `/` and `/employees`, which left a placeholder page under every tab.
+///
+/// The bottom bar floats over the tab, so its height is also given as view padding: the
+/// [Scaffold] of each screen places its floating button above that padding, not behind the bar.
 class TabNavigator extends StatelessWidget {
   /// Creates the navigator with its [navigatorKey] and the [initialRoute] of the tab.
   const TabNavigator({super.key, required this.navigatorKey, required this.initialRoute});
@@ -17,13 +22,19 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: navigatorKey,
-      initialRoute: initialRoute,
-      onGenerateInitialRoutes: (NavigatorState navigator, String name) => <Route<dynamic>>[
-        AppRouter.onGenerateRoute(RouteSettings(name: name)),
-      ],
-      onGenerateRoute: AppRouter.onGenerateRoute,
+    final MediaQueryData media = MediaQuery.of(context);
+    return MediaQuery(
+      data: media.copyWith(
+        viewPadding: media.viewPadding.copyWith(bottom: math.max(media.viewPadding.bottom, media.padding.bottom)),
+      ),
+      child: Navigator(
+        key: navigatorKey,
+        initialRoute: initialRoute,
+        onGenerateInitialRoutes: (NavigatorState navigator, String name) => <Route<dynamic>>[
+          AppRouter.onGenerateRoute(RouteSettings(name: name)),
+        ],
+        onGenerateRoute: AppRouter.onGenerateRoute,
+      ),
     );
   }
 }
