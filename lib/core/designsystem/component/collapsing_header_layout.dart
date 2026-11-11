@@ -43,7 +43,10 @@ class _CollapsingHeaderLayoutState extends State<CollapsingHeaderLayout> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.showHeaderKey != widget.showHeaderKey) {
       _offset = 0;
-      _reportVisibility();
+      // This runs while the screen is being built, so the screen is told after the frame.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _reportVisibility();
+      });
     }
   }
 
