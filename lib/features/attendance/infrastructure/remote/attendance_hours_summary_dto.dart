@@ -1,14 +1,18 @@
+/// Hours of an employee as returned by the API.
 class AttendanceHoursSummaryDto {
-  const AttendanceHoursSummaryDto(this.data);
+  /// Creates the DTO.
+  const AttendanceHoursSummaryDto({required this.employeeId, required this.workedHours, required this.overtimeHours});
 
-  final Map<String, dynamic> data;
+  /// Reads the DTO from its JSON.
+  factory AttendanceHoursSummaryDto.fromJson(Map<String, dynamic> json) {
+    return AttendanceHoursSummaryDto(
+      employeeId: (json['employeeId'] as num).toInt(),
+      workedHours: (json['workedHours'] as num?)?.toDouble() ?? 0,
+      overtimeHours: (json['overtimeHours'] as num?)?.toDouble() ?? 0,
+    );
+  }
 
-  factory AttendanceHoursSummaryDto.fromJson(Map<String, dynamic> json) =>
-      AttendanceHoursSummaryDto(json);
-
-  Map<String, dynamic> toJson() => Map<String, dynamic>.from(data);
-
-  dynamic get employeeId => data['employeeId'];
-  dynamic get effectiveHours => data['effectiveHours'];
-  dynamic get overtimeHours => data['overtimeHours'];
+  final int employeeId;
+  final double workedHours;
+  final double overtimeHours;
 }

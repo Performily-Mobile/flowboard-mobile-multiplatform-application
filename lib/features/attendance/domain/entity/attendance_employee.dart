@@ -1,11 +1,19 @@
+/// Employee shown next to the attendance records.
 class AttendanceEmployee {
-  final int id;
-  final String name;
-  final String? code;
-
+  /// Creates the employee.
   const AttendanceEmployee({
     required this.id,
     required this.name,
-    this.code,
+    required this.areaId,
+    required this.areaName,
+    required this.positionTitle,
+    required this.isActive,
   });
+
+  final int id;
+  final String name;
+  final int areaId;
+  final String areaName;
+  final String positionTitle;
+  final bool isActive;
 }

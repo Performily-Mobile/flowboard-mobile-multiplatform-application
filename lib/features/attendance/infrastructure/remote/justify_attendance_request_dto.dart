@@ -1,13 +1,11 @@
+/// Body of the justification request.
 class JustifyAttendanceRequestDto {
-  const JustifyAttendanceRequestDto(this.data);
+  /// Creates the DTO.
+  const JustifyAttendanceRequestDto({required this.reason, this.evidenceUrl});
 
-  final Map<String, dynamic> data;
+  final String reason;
+  final String? evidenceUrl;
 
-  factory JustifyAttendanceRequestDto.fromJson(Map<String, dynamic> json) =>
-      JustifyAttendanceRequestDto(json);
-
-  Map<String, dynamic> toJson() => Map<String, dynamic>.from(data);
-
-  dynamic get reason => data['reason'];
-  dynamic get evidenceUrl => data['evidenceUrl'];
+  /// JSON sent to the API.
+  Map<String, dynamic> toJson() => <String, dynamic>{'reason': reason, 'evidenceUrl': evidenceUrl};
 }
