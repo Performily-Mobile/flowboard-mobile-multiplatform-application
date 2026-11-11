@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flowboard/core/navigation/app_routes.dart';
+import 'package:flowboard/features/request/presentation/ui/screens/new_request_screen.dart';
 import 'package:flowboard/features/request/presentation/ui/screens/requests_screen.dart';
 
 /// Routes of the Request bounded context.
@@ -33,6 +34,8 @@ class RequestNavigation {
     switch (settings.name) {
       case RequestRoutes.requests:
         return const RequestsScreen();
+      case RequestRoutes.newRequest:
+        return const NewRequestScreen();
     }
     return null;
   }
