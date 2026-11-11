@@ -38,7 +38,7 @@ class NewRequestViewModel extends ViewModel<NewRequestUiState> {
     if (state.types.isNotEmpty || state.isLoading) return;
     update((NewRequestUiState s) => s.copyWith(isLoading: true, loadError: null));
     final Future<VacationAvailability?> availability = attemptOrNull(() => getVacationAvailability.execute());
-    final Future<RequestPerson?> approver = attemptOrNull(() => getApproverPreview.execute());
+    final Future<RequestPerson?> approver = attemptOrNull<RequestPerson?>(() => getApproverPreview.execute());
     try {
       final List<RequestType> types = await getRequestTypes.execute(activeOnly: true);
       final VacationAvailability? balance = await availability;
