@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flowboard/core/di/injection.dart';
+import 'package:flowboard/core/navigation/feature_route_registry.dart';
 import 'package:flowboard/core/network/api_client.dart';
 import 'package:flowboard/features/iam/application/session/session_manager.dart';
 import 'package:flowboard/features/iam/application/usecase/change_account_role_use_case.dart';
@@ -14,12 +15,13 @@ import 'package:flowboard/features/iam/domain/repository/session_store.dart';
 import 'package:flowboard/features/iam/infrastructure/local/secure_session_store.dart';
 import 'package:flowboard/features/iam/infrastructure/remote/iam_service.dart';
 import 'package:flowboard/features/iam/infrastructure/repository/iam_repository_impl.dart';
+import 'package:flowboard/features/iam/presentation/ui/navigation/iam_navigation.dart';
 import 'package:flowboard/features/iam/presentation/viewmodel/account_security_view_model.dart';
 import 'package:flowboard/features/iam/presentation/viewmodel/accounts_view_model.dart';
 import 'package:flowboard/features/iam/presentation/viewmodel/login_view_model.dart';
 import 'package:flowboard/features/iam/presentation/viewmodel/password_change_view_model.dart';
 
-/// Registers the dependencies of the IAM bounded context.
+/// Registers the dependencies of the IAM bounded context and its routes.
 ///
 /// The service, the repository, the session store, the session manager and the use cases are
 /// singletons, so the whole app shares one session; view models are created for each screen.
@@ -58,4 +60,6 @@ void setupIamDependencies() {
           resetAccountPassword: getIt<ResetAccountPasswordUseCase>(),
           sessionManager: getIt<SessionManager>(),
         ));
+
+  getIt<FeatureRouteRegistry>().register(IamNavigation.pageFor);
 }
