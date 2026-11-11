@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flowboard/core/navigation/app_routes.dart';
 import 'package:flowboard/features/request/presentation/ui/screens/new_request_screen.dart';
+import 'package:flowboard/features/request/presentation/ui/screens/request_detail_screen.dart';
 import 'package:flowboard/features/request/presentation/ui/screens/requests_screen.dart';
+import 'package:flowboard/features/request/presentation/ui/screens/review_request_screen.dart';
 
 /// Routes of the Request bounded context.
 ///
@@ -36,6 +38,10 @@ class RequestNavigation {
         return const RequestsScreen();
       case RequestRoutes.newRequest:
         return const NewRequestScreen();
+      case RequestRoutes.requestDetail:
+        return RequestDetailScreen(requestId: settings.arguments as int);
+      case RequestRoutes.reviewRequest:
+        return ReviewRequestScreen(requestId: settings.arguments as int);
     }
     return null;
   }
