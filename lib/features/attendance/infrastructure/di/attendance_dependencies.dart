@@ -1,5 +1,15 @@
 import 'package:flowboard/core/di/injection.dart';
 import 'package:flowboard/core/network/api_client.dart';
+import 'package:flowboard/core/session/current_employee_provider.dart';
+import 'package:flowboard/features/attendance/application/usecase/attendance_people_resolver.dart';
+import 'package:flowboard/features/attendance/application/usecase/get_area_attendance_report_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/get_area_hours_report_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/get_attendance_areas_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/get_attendance_records_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/get_employee_attendance_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/get_my_attendance_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/justify_attendance_use_case.dart';
+import 'package:flowboard/features/attendance/application/usecase/register_punch_use_case.dart';
 import 'package:flowboard/features/attendance/domain/repository/attendance_directory.dart';
 import 'package:flowboard/features/attendance/domain/repository/attendance_repository.dart';
 import 'package:flowboard/features/attendance/infrastructure/acl/workspace_attendance_directory_adapter.dart';
@@ -10,8 +20,8 @@ import 'package:flowboard/features/workspace/application/usecase/get_employees_u
 
 /// Registers the dependencies of the Attendance bounded context.
 ///
-/// The areas and the names of the employees come from the Workspace use cases, which are resolved
-/// when they are first used.
+/// Services, repositories and use cases are singletons. The areas and the names of the employees
+/// come from the Workspace use cases, which are resolved when they are first used.
 void setupAttendanceDependencies() {
   getIt
     ..registerLazySingleton<AttendanceService>(() => AttendanceService(client: getIt<ApiClient>()))
@@ -20,5 +30,33 @@ void setupAttendanceDependencies() {
     ..registerLazySingleton<AttendanceDirectory>(() => WorkspaceAttendanceDirectoryAdapter(
           getAreasUseCase: getIt<GetAreasUseCase>(),
           getEmployeesUseCase: getIt<GetEmployeesUseCase>(),
+        ))
+    ..registerLazySingleton<AttendancePeopleResolver>(
+        () => AttendancePeopleResolver(directory: getIt<AttendanceDirectory>()))
+    ..registerLazySingleton<GetMyAttendanceUseCase>(
+        () => GetMyAttendanceUseCase(repository: getIt<AttendanceRepository>()))
+    ..registerLazySingleton<RegisterPunchUseCase>(() => RegisterPunchUseCase(
+          repository: getIt<AttendanceRepository>(),
+          currentEmployeeProvider: getIt<CurrentEmployeeProvider>(),
+        ))
+    ..registerLazySingleton<JustifyAttendanceUseCase>(
+        () => JustifyAttendanceUseCase(repository: getIt<AttendanceRepository>()))
+    ..registerLazySingleton<GetAttendanceRecordsUseCase>(() => GetAttendanceRecordsUseCase(
+          repository: getIt<AttendanceRepository>(),
+          peopleResolver: getIt<AttendancePeopleResolver>(),
+        ))
+    ..registerLazySingleton<GetAttendanceAreasUseCase>(
+        () => GetAttendanceAreasUseCase(directory: getIt<AttendanceDirectory>()))
+    ..registerLazySingleton<GetAreaAttendanceReportUseCase>(() => GetAreaAttendanceReportUseCase(
+          repository: getIt<AttendanceRepository>(),
+          peopleResolver: getIt<AttendancePeopleResolver>(),
+        ))
+    ..registerLazySingleton<GetEmployeeAttendanceUseCase>(() => GetEmployeeAttendanceUseCase(
+          repository: getIt<AttendanceRepository>(),
+          peopleResolver: getIt<AttendancePeopleResolver>(),
+        ))
+    ..registerLazySingleton<GetAreaHoursReportUseCase>(() => GetAreaHoursReportUseCase(
+          repository: getIt<AttendanceRepository>(),
+          peopleResolver: getIt<AttendancePeopleResolver>(),
         ));
 }
