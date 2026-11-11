@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flowboard/features/iam/presentation/ui/screens/legal_screen.dart';
+import 'package:flowboard/features/iam/presentation/ui/screens/password_change_screen.dart';
 
 /// Routes of the IAM bounded context.
 ///
@@ -10,6 +11,9 @@ class IamRoutes {
 
   /// Terms of service and privacy policy.
   static const String legal = '/legal';
+
+  /// Change of the password started by the user; closes with the result message.
+  static const String changePassword = '/change-password';
 }
 
 /// Page builder of the IAM routes, registered in the core route registry.
@@ -21,6 +25,8 @@ class IamNavigation {
     switch (settings.name) {
       case IamRoutes.legal:
         return const LegalScreen();
+      case IamRoutes.changePassword:
+        return const PasswordChangeScreen();
     }
     return null;
   }
