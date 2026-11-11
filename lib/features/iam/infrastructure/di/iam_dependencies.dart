@@ -14,11 +14,15 @@ import 'package:flowboard/features/iam/domain/repository/session_store.dart';
 import 'package:flowboard/features/iam/infrastructure/local/secure_session_store.dart';
 import 'package:flowboard/features/iam/infrastructure/remote/iam_service.dart';
 import 'package:flowboard/features/iam/infrastructure/repository/iam_repository_impl.dart';
+import 'package:flowboard/features/iam/presentation/viewmodel/account_security_view_model.dart';
+import 'package:flowboard/features/iam/presentation/viewmodel/accounts_view_model.dart';
+import 'package:flowboard/features/iam/presentation/viewmodel/login_view_model.dart';
+import 'package:flowboard/features/iam/presentation/viewmodel/password_change_view_model.dart';
 
 /// Registers the dependencies of the IAM bounded context.
 ///
 /// The service, the repository, the session store, the session manager and the use cases are
-/// singletons, so the whole app shares one session.
+/// singletons, so the whole app shares one session; view models are created for each screen.
 void setupIamDependencies() {
   getIt
     ..registerLazySingleton<IamService>(() => IamService(client: getIt<ApiClient>()))
@@ -37,5 +41,21 @@ void setupIamDependencies() {
     ..registerLazySingleton<ChangeAccountRoleUseCase>(
         () => ChangeAccountRoleUseCase(repository: getIt<IamRepository>()))
     ..registerLazySingleton<ResetAccountPasswordUseCase>(
-        () => ResetAccountPasswordUseCase(repository: getIt<IamRepository>()));
+        () => ResetAccountPasswordUseCase(repository: getIt<IamRepository>()))
+    ..registerFactory<LoginViewModel>(() => LoginViewModel(signIn: getIt<SignInUseCase>()))
+    ..registerFactory<PasswordChangeViewModel>(() => PasswordChangeViewModel(
+          changePassword: getIt<ChangePasswordUseCase>(),
+          signOut: getIt<SignOutUseCase>(),
+          sessionManager: getIt<SessionManager>(),
+        ))
+    ..registerFactory<AccountSecurityViewModel>(() => AccountSecurityViewModel(
+          signOut: getIt<SignOutUseCase>(),
+          sessionManager: getIt<SessionManager>(),
+        ))
+    ..registerFactory<AccountsViewModel>(() => AccountsViewModel(
+          getAccounts: getIt<GetAccountsUseCase>(),
+          changeAccountRole: getIt<ChangeAccountRoleUseCase>(),
+          resetAccountPassword: getIt<ResetAccountPasswordUseCase>(),
+          sessionManager: getIt<SessionManager>(),
+        ));
 }
