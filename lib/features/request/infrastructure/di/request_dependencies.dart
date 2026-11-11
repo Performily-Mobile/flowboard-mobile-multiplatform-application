@@ -1,4 +1,5 @@
 import 'package:flowboard/core/di/injection.dart';
+import 'package:flowboard/core/navigation/feature_route_registry.dart';
 import 'package:flowboard/core/network/api_client.dart';
 import 'package:flowboard/core/session/current_employee_provider.dart';
 import 'package:flowboard/features/benefits/application/usecase/get_my_vacation_balance_use_case.dart';
@@ -34,6 +35,7 @@ import 'package:flowboard/features/request/infrastructure/remote/request_type_se
 import 'package:flowboard/features/request/infrastructure/repository/local_request_attachment_storage.dart';
 import 'package:flowboard/features/request/infrastructure/repository/request_repository_impl.dart';
 import 'package:flowboard/features/request/infrastructure/repository/request_type_repository_impl.dart';
+import 'package:flowboard/features/request/presentation/ui/navigation/request_navigation.dart';
 import 'package:flowboard/features/request/presentation/viewmodel/my_requests_view_model.dart';
 import 'package:flowboard/features/request/presentation/viewmodel/new_request_type_view_model.dart';
 import 'package:flowboard/features/request/presentation/viewmodel/new_request_view_model.dart';
@@ -45,7 +47,7 @@ import 'package:flowboard/features/request/presentation/viewmodel/review_request
 import 'package:flowboard/features/workspace/application/usecase/get_employee_by_id_use_case.dart';
 import 'package:flowboard/features/workspace/application/usecase/get_employees_use_case.dart';
 
-/// Registers the dependencies of the Request bounded context.
+/// Registers the dependencies of the Request bounded context and its routes.
 ///
 /// Services, repositories and use cases are singletons; view models are created for each screen.
 /// The employee directory and the vacation balance read the Workspace and Benefits use cases, which
@@ -175,4 +177,6 @@ void setupRequestDependencies() {
         ))
     ..registerFactory<NewRequestTypeViewModel>(
         () => NewRequestTypeViewModel(createRequestType: getIt<CreateRequestTypeUseCase>()));
+
+  getIt<FeatureRouteRegistry>().register(RequestNavigation.pageFor);
 }
