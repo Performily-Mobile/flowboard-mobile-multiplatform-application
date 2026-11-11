@@ -5,14 +5,17 @@ import 'package:flowboard/core/designsystem/theme/app_theme.dart';
 import 'package:flowboard/core/di/injection.dart';
 import 'package:flowboard/core/navigation/app_router.dart';
 import 'package:flowboard/core/navigation/flowboard_app.dart';
+import 'package:flowboard/features/iam/application/usecase/restore_session_use_case.dart';
+import 'package:flowboard/features/iam/presentation/ui/navigation/session_gate.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupDependencies();
+  await getIt<RestoreSessionUseCase>().execute();
   runApp(const MainApp());
 }
 
-/// Root of the app: glass theme, Spanish locale and the signed-in shell.
+/// Root of the app: glass theme, Spanish locale, and the login or the signed-in shell.
 ///
 /// Full-screen forms are pushed on the root navigator, above the bottom bar, through
 /// [AppRouter.onGenerateRoute].
@@ -32,7 +35,7 @@ class MainApp extends StatelessWidget {
       supportedLocales: const <Locale>[Locale('es')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       onGenerateRoute: AppRouter.onGenerateRoute,
-      home: const GlassBackground(child: FlowboardApp()),
+      home: const GlassBackground(child: SessionGate(child: FlowboardApp())),
     );
   }
 }
