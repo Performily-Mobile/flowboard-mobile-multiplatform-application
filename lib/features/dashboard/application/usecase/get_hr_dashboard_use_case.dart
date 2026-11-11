@@ -22,7 +22,7 @@ class GetHrDashboardUseCase {
     final DateTime day = _dateOnly(today ?? now);
 
     final Future<String?> firstName = _attempt(repository.getCurrentUserFirstName);
-    final Future<List<RequestToAttend>?> requests = _attempt(repository.getRequestsToAttend);
+    final Future<PendingRequests?> requests = _attempt(repository.getRequestsToAttend);
     final Future<List<double>?> vacationDays = _attempt(repository.getAvailableVacationDays);
     final List<DashboardArea>? areas = await _attempt(repository.getActiveAreas);
 
@@ -31,17 +31,17 @@ class GetHrDashboardUseCase {
     final Future<MonthlyLateness?> monthlyLateness =
         areas == null ? Future<MonthlyLateness?>.value(null) : _monthlyLateness(areas, day);
 
-    final List<RequestToAttend>? pending = await requests;
+    final PendingRequests? pending = await requests;
     final List<double>? balances = await vacationDays;
 
     return HrDashboard(
       userFirstName: await firstName,
       activeEmployees: areas?.fold<int>(0, (int total, DashboardArea area) => total + area.activeEmployees),
-      pendingRequests: pending?.length,
+      pendingRequests: pending?.total,
       monthlyLateness: await monthlyLateness,
       expiringVacations: balances?.where((double days) => days >= expiringVacationDays).length,
       todayAttendance: await todayAttendance,
-      requestsToAttend: pending?.take(_maxRequestsToAttend).toList(),
+      requestsToAttend: pending?.oldest.take(_maxRequestsToAttend).toList(),
       loadedAt: DateTime.now(),
     );
   }

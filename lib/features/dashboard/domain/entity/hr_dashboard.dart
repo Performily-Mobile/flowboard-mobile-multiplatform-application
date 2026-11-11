@@ -73,6 +73,18 @@ class AreaAttendance {
   final int percentage;
 }
 
+/// Pending requests of the inbox: how many there are in total and the oldest ones.
+class PendingRequests {
+  /// Creates the value.
+  const PendingRequests({required this.total, required this.oldest});
+
+  /// Number of pending requests in the inbox.
+  final int total;
+
+  /// First pending requests, oldest first.
+  final List<RequestToAttend> oldest;
+}
+
 /// Pending request in the HR inbox.
 class RequestToAttend {
   /// Creates the request.

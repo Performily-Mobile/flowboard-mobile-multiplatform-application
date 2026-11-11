@@ -15,8 +15,8 @@ abstract class HrDashboardRepository {
   /// Attendance counts of an area from [from] to [to], both inclusive.
   Future<AttendanceSummary> getAttendanceSummary(int areaId, DateTime from, DateTime to);
 
-  /// Requests pending in the HR inbox, oldest first.
-  Future<List<RequestToAttend>> getRequestsToAttend();
+  /// Total of requests pending in the HR inbox and the oldest ones.
+  Future<PendingRequests> getRequestsToAttend();
 
   /// Available vacation days of every active employee.
   Future<List<double>> getAvailableVacationDays();
