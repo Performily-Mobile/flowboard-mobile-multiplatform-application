@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flowboard/core/navigation/app_routes.dart';
+import 'package:flowboard/features/request/presentation/ui/screens/my_requests_screen.dart';
 import 'package:flowboard/features/request/presentation/ui/screens/new_request_screen.dart';
 import 'package:flowboard/features/request/presentation/ui/screens/new_request_type_screen.dart';
 import 'package:flowboard/features/request/presentation/ui/screens/request_detail_screen.dart';
@@ -10,14 +11,15 @@ import 'package:flowboard/features/request/presentation/ui/screens/review_reques
 
 /// Routes of the Request bounded context.
 ///
-/// The "Solicitudes" tab, the catalog of types and the review opened from the dashboard reuse the
-/// names of the core navigation. The new request and the new type are full-screen forms pushed on
+/// The "Solicitudes" tab, "Mis solicitudes" and the catalog of types opened from "Más", and the
+/// review opened from the dashboard reuse the names of the core navigation. The new request and the new type are full-screen forms pushed on
 /// the root navigator, so the bottom bar is hidden while they are open. The screens that finish an
 /// action close with a message for the snackbar of the previous screen.
 class RequestRoutes {
   const RequestRoutes._();
 
   static const String requests = AppRoutes.requests;
+  static const String myRequests = AppRoutes.myRequests;
   static const String newRequest = '/new-request';
 
   /// Detail of one of the viewer's requests; receives the request identifier.
@@ -39,6 +41,8 @@ class RequestNavigation {
     switch (settings.name) {
       case RequestRoutes.requests:
         return const RequestsScreen();
+      case RequestRoutes.myRequests:
+        return const MyRequestsScreen();
       case RequestRoutes.newRequest:
         return const NewRequestScreen();
       case RequestRoutes.requestDetail:

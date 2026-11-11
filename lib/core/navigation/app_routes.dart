@@ -20,6 +20,7 @@ class AppRoutes {
   static const String myBenefits = '/my-benefits';
   static const String myVacationBalance = '/my-vacation-balance';
   static const String requestTypes = '/request-types';
+  static const String myRequests = '/my-requests';
   static const String account = '/account';
 
   /// Reports and detail screens opened from the dashboard; their bounded contexts register them.
