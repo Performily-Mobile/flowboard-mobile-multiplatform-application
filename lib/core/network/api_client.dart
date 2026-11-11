@@ -10,8 +10,15 @@ import 'package:flowboard/core/network/api_exception.dart';
 /// into an [ApiException] so repositories never see transport details.
 class ApiClient {
   /// Creates the client; [baseUrl] defaults to [defaultBaseUrl].
-  ApiClient({required http.Client client, String baseUrl = defaultBaseUrl})
-      : _client = client,
+  ///
+  /// [tokenProvider] gives the token of the signed-in user, sent as `Authorization: Bearer`, and
+  /// [onUnauthorized] is told which token the backend rejected with a 401. Both are optional.
+  ApiClient({
+    required http.Client client,
+    String baseUrl = defaultBaseUrl,
+    this.tokenProvider,
+    this.onUnauthorized,
+  })  : _client = client,
         _baseUri = Uri.parse(baseUrl);
 
   /// Base URL of the Flowboard mobile service.
@@ -26,29 +33,50 @@ class ApiClient {
   final http.Client _client;
   final Uri _baseUri;
 
+  /// Token of the signed-in user, or null when nobody is signed in.
+  final String? Function()? tokenProvider;
+
+  /// Called with the token the backend no longer accepts.
+  final void Function(String token)? onUnauthorized;
+
   /// Sends a GET request and returns the decoded JSON body.
   Future<dynamic> get(String path, {Map<String, dynamic>? query}) {
-    return _send(() => _client.get(_uri(path, query), headers: _headers));
+    return _send(
+      path,
+      (Map<String, String> headers) => _client.get(_uri(path, query), headers: headers),
+    );
   }
 
   /// Sends a POST request with an optional JSON [body].
   Future<dynamic> post(String path, {Object? body}) {
-    return _send(() => _client.post(_uri(path), headers: _headers, body: _encode(body)));
+    return _send(
+      path,
+      (Map<String, String> headers) => _client.post(_uri(path), headers: headers, body: _encode(body)),
+    );
   }
 
   /// Sends a PUT request with an optional JSON [body].
   Future<dynamic> put(String path, {Object? body}) {
-    return _send(() => _client.put(_uri(path), headers: _headers, body: _encode(body)));
+    return _send(
+      path,
+      (Map<String, String> headers) => _client.put(_uri(path), headers: headers, body: _encode(body)),
+    );
   }
 
   /// Sends a PATCH request with an optional JSON [body].
   Future<dynamic> patch(String path, {Object? body}) {
-    return _send(() => _client.patch(_uri(path), headers: _headers, body: _encode(body)));
+    return _send(
+      path,
+      (Map<String, String> headers) => _client.patch(_uri(path), headers: headers, body: _encode(body)),
+    );
   }
 
   /// Sends a DELETE request.
   Future<dynamic> delete(String path) {
-    return _send(() => _client.delete(_uri(path), headers: _headers));
+    return _send(
+      path,
+      (Map<String, String> headers) => _client.delete(_uri(path), headers: headers),
+    );
   }
 
   Uri _uri(String path, [Map<String, dynamic>? query]) {
@@ -63,11 +91,22 @@ class ApiClient {
 
   String? _encode(Object? body) => body == null ? null : jsonEncode(body);
 
-  Future<dynamic> _send(Future<http.Response> Function() request) async {
+  /// Headers of a request: the JSON ones plus the token when somebody is signed in.
+  Map<String, String> _headersWith(String? token) {
+    if (token == null) return _headers;
+    return <String, String>{..._headers, 'Authorization': 'Bearer $token'};
+  }
+
+  Future<dynamic> _send(String path, Future<http.Response> Function(Map<String, String> headers) request) async {
+    final String? token = tokenProvider?.call();
     try {
-      final http.Response response = await request().timeout(_timeout);
+      final http.Response response = await request(_headersWith(token)).timeout(_timeout);
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return _decode(response);
+      }
+      // The auth endpoints answer 401 for a wrong password, which does not end the session.
+      if (response.statusCode == 401 && token != null && !path.startsWith('auth/')) {
+        onUnauthorized?.call(token);
       }
       throw _parseError(response);
     } on ApiException {
@@ -85,18 +124,20 @@ class ApiClient {
   }
 
   ApiException _parseError(http.Response response) {
+    final int status = response.statusCode;
     try {
       final dynamic json = jsonDecode(utf8.decode(response.bodyBytes));
       if (json is Map<String, dynamic>) {
         return ApiException(
           code: json['code'] as String?,
-          message: json['message'] as String? ?? 'Error ${response.statusCode}',
+          message: json['message'] as String? ?? 'Error $status',
           details: json['details'] as String?,
+          statusCode: status,
         );
       }
     } catch (_) {
-      return ApiException(message: 'Error ${response.statusCode}');
+      return ApiException(message: 'Error $status', statusCode: status);
     }
-    return ApiException(message: 'Error ${response.statusCode}');
+    return ApiException(message: 'Error $status', statusCode: status);
   }
 }
