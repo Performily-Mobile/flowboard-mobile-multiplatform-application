@@ -52,7 +52,7 @@ class DashboardFormatters {
     } else {
       period = '${_shortDate(start)} al ${_shortDate(end)}';
     }
-    return <String>[request.requestTypeName, if (period != null) period].join(' · ');
+    return <String>[request.requestTypeName, ?period].join(' · ');
   }
 
   /// Uppercase initials of the first two words of a name.

@@ -32,7 +32,7 @@ class DashboardMetricCard extends StatelessWidget {
     return GlassCard(
       onTap: onTap,
       padding: const EdgeInsets.all(AppSpacing.l),
-      semanticLabel: <String>[label, value, if (note != null) note].join(', '),
+      semanticLabel: <String>[label, value, ?note].join(', '),
       child: ExcludeSemantics(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

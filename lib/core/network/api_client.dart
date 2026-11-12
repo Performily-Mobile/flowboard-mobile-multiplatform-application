@@ -14,12 +14,11 @@ class ApiClient {
   /// [tokenProvider] gives the token of the signed-in user, sent as `Authorization: Bearer`, and
   /// [onUnauthorized] is told which token the backend rejected with a 401. Both are optional.
   ApiClient({
-    required http.Client client,
+    required this._client,
     String baseUrl = defaultBaseUrl,
     this.tokenProvider,
     this.onUnauthorized,
-  })  : _client = client,
-        _baseUri = Uri.parse(baseUrl);
+  }) : _baseUri = Uri.parse(baseUrl);
 
   /// Base URL of the Flowboard mobile service.
   static const String defaultBaseUrl = 'https://flowboard-mobile-service.onrender.com/api/v1/';
