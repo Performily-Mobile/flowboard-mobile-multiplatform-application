@@ -54,6 +54,8 @@ class MorePage extends StatelessWidget {
                           () => _open(context, AppRoutes.myProfile)),
                       _MoreItemData(FlowboardIcons.article, 'Mis solicitudes', 'Vacaciones, permisos y licencias que pediste',
                           () => _open(context, AppRoutes.myRequests)),
+                      _MoreItemData(FlowboardIcons.schedule, 'Mi asistencia', 'Marcar entrada y salida, y ver mis días',
+                          () => _open(context, AppRoutes.myAttendance)),
                       _MoreItemData(FlowboardIcons.gift, 'Mis beneficios', 'Beneficios vigentes y entregados',
                           () => _open(context, AppRoutes.myBenefits)),
                       _MoreItemData(FlowboardIcons.schedule, 'Mi saldo de vacaciones', 'Días disponibles y movimientos',

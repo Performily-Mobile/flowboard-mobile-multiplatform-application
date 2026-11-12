@@ -6,17 +6,21 @@ import 'package:flowboard/features/attendance/presentation/ui/screens/attendance
 import 'package:flowboard/features/attendance/presentation/ui/screens/attendance_screen.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/employee_attendance_screen.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/justify_attendance_screen.dart';
+import 'package:flowboard/features/attendance/presentation/ui/screens/my_attendance_screen.dart';
 
 /// Routes of the Attendance bounded context.
 ///
-/// The "Asistencia" tab and the area report opened from the dashboard reuse the names of the core
-/// navigation. The justification is a full-screen
+/// The "Asistencia" tab, the area report opened from the dashboard and the attendance of an HR
+/// staff member opened from "Más" reuse the names of the core navigation. The justification is a full-screen
 /// form pushed on the root navigator, so the bottom bar is hidden while it is open; it closes with a
 /// message for the snackbar of the previous screen.
 class AttendanceRoutes {
   const AttendanceRoutes._();
 
   static const String attendance = AppRoutes.attendance;
+
+  /// Own attendance of an HR staff member, opened from "Más".
+  static const String myAttendance = AppRoutes.myAttendance;
 
   /// Area report opened from the HR dashboard.
   static const String areaReport = AppRoutes.attendanceAreaReport;
@@ -46,6 +50,8 @@ class AttendanceNavigation {
     switch (settings.name) {
       case AttendanceRoutes.attendance:
         return const AttendanceScreen();
+      case AttendanceRoutes.myAttendance:
+        return const MyAttendanceScreen();
       case AttendanceRoutes.areaReport:
         return const AttendanceAreaReportScreen();
       case AttendanceRoutes.employeeAttendance:
