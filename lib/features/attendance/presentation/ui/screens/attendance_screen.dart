@@ -6,6 +6,7 @@ import 'package:flowboard/core/di/injection.dart';
 import 'package:flowboard/features/attendance/presentation/state/attendance_filters.dart';
 import 'package:flowboard/features/attendance/presentation/state/attendance_home_ui_state.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/attendance_area_view.dart';
+import 'package:flowboard/features/attendance/presentation/ui/screens/attendance_hours_view.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/attendance_records_view.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/my_attendance_view.dart';
 import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_home_view_model.dart';
@@ -24,11 +25,6 @@ class AttendanceScreen extends StatefulWidget {
 }
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  static const List<AttendanceSection> _sections = <AttendanceSection>[
-    AttendanceSection.records,
-    AttendanceSection.areas,
-  ];
-
   late final AttendanceHomeViewModel _viewModel = getIt<AttendanceHomeViewModel>();
   final Set<AttendanceSection> _visited = <AttendanceSection>{};
 
@@ -58,31 +54,29 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   Widget _buildSections(AttendanceHomeUiState state) {
     _visited.add(state.section);
-    final Widget? tabs = _sections.length < 2
-        ? null
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal),
-            child: FlowboardTabs<AttendanceSection>(
-              options: _sections,
-              selected: state.section,
-              onSelect: _viewModel.onSectionSelected,
-              labelOf: (AttendanceSection section) => section.label,
-            ),
-          );
+    final Widget tabs = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal),
+      child: FlowboardTabs<AttendanceSection>(
+        options: AttendanceSection.values,
+        selected: state.section,
+        onSelect: _viewModel.onSectionSelected,
+        labelOf: (AttendanceSection section) => section.label,
+      ),
+    );
     return IndexedStack(
-      index: _sections.indexOf(state.section),
+      index: state.section.index,
       children: <Widget>[
-        for (final AttendanceSection section in _sections)
+        for (final AttendanceSection section in AttendanceSection.values)
           _visited.contains(section) ? _sectionView(section, tabs) : const SizedBox.shrink(),
       ],
     );
   }
 
-  Widget _sectionView(AttendanceSection section, Widget? tabs) {
+  Widget _sectionView(AttendanceSection section, Widget tabs) {
     return switch (section) {
       AttendanceSection.records => AttendanceRecordsView(leading: tabs),
       AttendanceSection.areas => AttendanceAreaView(leading: tabs),
-      AttendanceSection.hours => const SizedBox.shrink(),
+      AttendanceSection.hours => AttendanceHoursView(leading: tabs),
     };
   }
 }
