@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flowboard/core/designsystem/component/flowboard_logo.dart';
 import 'package:flowboard/core/designsystem/component/flowboard_top_bar.dart';
 import 'package:flowboard/core/designsystem/component/glass_card.dart';
 import 'package:flowboard/core/designsystem/component/glass_dialog.dart';
@@ -120,7 +121,7 @@ class _LoginForm extends StatelessWidget {
                     Row(
                       spacing: AppSpacing.s,
                       children: <Widget>[
-                        const Icon(FlowboardIcons.gridView, color: AppColors.primary),
+                        const FlowboardLogo(),
                         Text(
                           'Flowboard',
                           style: theme.textTheme.titleMedium?.copyWith(
