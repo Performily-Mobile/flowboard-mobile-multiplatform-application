@@ -15,7 +15,6 @@ import 'package:flowboard/features/request/domain/entity/request_type.dart';
 import 'package:flowboard/features/request/presentation/state/paging_state.dart';
 import 'package:flowboard/features/request/presentation/state/requests_ui_state.dart';
 import 'package:flowboard/features/request/presentation/ui/components/request_cards.dart';
-import 'package:flowboard/features/request/presentation/ui/components/request_colors.dart';
 import 'package:flowboard/features/request/presentation/ui/components/request_common.dart';
 import 'package:flowboard/features/request/presentation/ui/components/request_dialogs.dart';
 import 'package:flowboard/features/request/presentation/ui/components/request_formatters.dart';
@@ -144,7 +143,7 @@ class _RequestsScreenState extends State<RequestsScreen> {
                             labelOf: state.tabLabel,
                           ),
                         ),
-                        _TabFilters(state: state, viewModel: _viewModel),
+                        if (state.selectedTab != RequestsTab.hrInbox) _TabFilters(state: state, viewModel: _viewModel),
                       ],
                     ),
                   ),
@@ -272,15 +271,7 @@ class _TabFilters extends StatelessWidget {
           ],
         );
       case RequestsTab.hrInbox:
-        return const Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal),
-          child: RequestBanner(
-            message: 'Aquí llegan las solicitudes de colaboradores que no tienen jefe directo asignado.',
-            icon: FlowboardIcons.info,
-            containerColor: RequestColors.infoBanner,
-            contentColor: RequestColors.onInfoBanner,
-          ),
-        );
+        return const SizedBox.shrink();
       case RequestsTab.all:
         return _ChipRow(
           children: <Widget>[
