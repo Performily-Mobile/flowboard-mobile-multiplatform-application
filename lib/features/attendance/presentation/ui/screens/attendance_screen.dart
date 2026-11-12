@@ -5,6 +5,7 @@ import 'package:flowboard/core/designsystem/theme/app_spacing.dart';
 import 'package:flowboard/core/di/injection.dart';
 import 'package:flowboard/features/attendance/presentation/state/attendance_filters.dart';
 import 'package:flowboard/features/attendance/presentation/state/attendance_home_ui_state.dart';
+import 'package:flowboard/features/attendance/presentation/ui/screens/attendance_area_view.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/attendance_records_view.dart';
 import 'package:flowboard/features/attendance/presentation/ui/screens/my_attendance_view.dart';
 import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_home_view_model.dart';
@@ -23,7 +24,10 @@ class AttendanceScreen extends StatefulWidget {
 }
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  static const List<AttendanceSection> _sections = <AttendanceSection>[AttendanceSection.records];
+  static const List<AttendanceSection> _sections = <AttendanceSection>[
+    AttendanceSection.records,
+    AttendanceSection.areas,
+  ];
 
   late final AttendanceHomeViewModel _viewModel = getIt<AttendanceHomeViewModel>();
   final Set<AttendanceSection> _visited = <AttendanceSection>{};
@@ -77,7 +81,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget _sectionView(AttendanceSection section, Widget? tabs) {
     return switch (section) {
       AttendanceSection.records => AttendanceRecordsView(leading: tabs),
-      AttendanceSection.areas || AttendanceSection.hours => const SizedBox.shrink(),
+      AttendanceSection.areas => AttendanceAreaView(leading: tabs),
+      AttendanceSection.hours => const SizedBox.shrink(),
     };
   }
 }

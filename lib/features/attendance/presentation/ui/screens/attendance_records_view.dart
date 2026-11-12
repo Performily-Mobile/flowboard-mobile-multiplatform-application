@@ -9,10 +9,11 @@ import 'package:flowboard/features/attendance/presentation/state/attendance_reco
 import 'package:flowboard/features/attendance/presentation/ui/components/attendance_cards.dart';
 import 'package:flowboard/features/attendance/presentation/ui/components/attendance_common.dart';
 import 'package:flowboard/features/attendance/presentation/ui/components/attendance_fields.dart';
+import 'package:flowboard/features/attendance/presentation/ui/navigation/attendance_navigation.dart';
 import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_records_view_model.dart';
 
 /// Records section of the HR staff: the attendance of the whole staff, by period and status, loaded
-/// page by page while the list scrolls.
+/// page by page while the list scrolls. A record opens the attendance of its employee.
 class AttendanceRecordsView extends StatefulWidget {
   /// Creates the view; [leading] is shown at the top of the collapsing header (the section tabs).
   const AttendanceRecordsView({super.key, this.leading});
@@ -36,6 +37,13 @@ class _AttendanceRecordsViewState extends State<AttendanceRecordsView> {
   void dispose() {
     _viewModel.dispose();
     super.dispose();
+  }
+
+  void _openEmployee(int employeeId) {
+    Navigator.of(context).pushNamed(
+      AttendanceRoutes.employeeAttendance,
+      arguments: EmployeeAttendanceArgs(employeeId: employeeId, period: _viewModel.state.period),
+    );
   }
 
   @override
@@ -129,7 +137,11 @@ class _AttendanceRecordsViewState extends State<AttendanceRecordsView> {
           return Padding(
             key: ValueKey<String>('${record.id}-${record.employeeId}-${record.workDate}'),
             padding: const EdgeInsets.only(bottom: AppSpacing.itemGap),
-            child: AttendanceRecordCard(record: record, showEmployee: true),
+            child: AttendanceRecordCard(
+              record: record,
+              showEmployee: true,
+              onTap: () => _openEmployee(record.employeeId),
+            ),
           );
         },
       ),
