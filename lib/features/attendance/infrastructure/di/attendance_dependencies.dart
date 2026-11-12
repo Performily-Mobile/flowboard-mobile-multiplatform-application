@@ -1,4 +1,5 @@
 import 'package:flowboard/core/di/injection.dart';
+import 'package:flowboard/core/navigation/feature_route_registry.dart';
 import 'package:flowboard/core/network/api_client.dart';
 import 'package:flowboard/core/session/current_employee_provider.dart';
 import 'package:flowboard/features/attendance/application/usecase/attendance_people_resolver.dart';
@@ -15,6 +16,7 @@ import 'package:flowboard/features/attendance/domain/repository/attendance_repos
 import 'package:flowboard/features/attendance/infrastructure/acl/workspace_attendance_directory_adapter.dart';
 import 'package:flowboard/features/attendance/infrastructure/remote/attendance_service.dart';
 import 'package:flowboard/features/attendance/infrastructure/repository/attendance_repository_impl.dart';
+import 'package:flowboard/features/attendance/presentation/ui/navigation/attendance_navigation.dart';
 import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_area_view_model.dart';
 import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_home_view_model.dart';
 import 'package:flowboard/features/attendance/presentation/viewmodel/attendance_hours_view_model.dart';
@@ -25,7 +27,7 @@ import 'package:flowboard/features/attendance/presentation/viewmodel/my_attendan
 import 'package:flowboard/features/workspace/application/usecase/get_areas_use_case.dart';
 import 'package:flowboard/features/workspace/application/usecase/get_employees_use_case.dart';
 
-/// Registers the dependencies of the Attendance bounded context.
+/// Registers the dependencies of the Attendance bounded context and its routes.
 ///
 /// Services, repositories and use cases are singletons; view models are created for each screen.
 /// The areas and the names of the employees come from the Workspace use cases, which are resolved
@@ -87,4 +89,6 @@ void setupAttendanceDependencies() {
           getAttendanceAreas: getIt<GetAttendanceAreasUseCase>(),
           getAreaHoursReport: getIt<GetAreaHoursReportUseCase>(),
         ));
+
+  getIt<FeatureRouteRegistry>().register(AttendanceNavigation.pageFor);
 }
