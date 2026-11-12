@@ -40,10 +40,13 @@ class ApiClient {
   final void Function(String token)? onUnauthorized;
 
   /// Sends a GET request and returns the decoded JSON body.
-  Future<dynamic> get(String path, {Map<String, dynamic>? query}) {
+  ///
+  /// [headers] are added to the default ones; Payroll uses them to send `X-Employee-Id`.
+  Future<dynamic> get(String path, {Map<String, dynamic>? query, Map<String, String>? headers}) {
     return _send(
       path,
-      (Map<String, String> headers) => _client.get(_uri(path, query), headers: headers),
+      (Map<String, String> base) =>
+          _client.get(_uri(path, query), headers: headers == null ? base : <String, String>{...base, ...headers}),
     );
   }
 
