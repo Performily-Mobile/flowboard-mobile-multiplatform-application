@@ -22,11 +22,12 @@ class SessionGate extends StatefulWidget {
 
 class _SessionGateState extends State<SessionGate> {
   final SessionManager _sessionManager = getIt<SessionManager>();
-  late String? _shownKey = _keyOf(_sessionManager.current);
+  String? _shownKey;
 
   @override
   void initState() {
     super.initState();
+    _shownKey = _keyOf(_sessionManager.current);
     _sessionManager.addListener(_onSessionChanged);
   }
 
