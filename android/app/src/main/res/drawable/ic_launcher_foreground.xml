@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Three white bars of the Flowboard logo, centered in the safe zone of the adaptive icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M37.56,37.32 H68.04 A2.76,2.76 0 0 1 68.04,42.84 H37.56 A2.76,2.76 0 0 1 37.56,37.32 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M37.56,51.24 H58.44 A2.76,2.76 0 0 1 58.44,56.76 H37.56 A2.76,2.76 0 0 1 37.56,51.24 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M37.56,65.16 H48.84 A2.76,2.76 0 0 1 48.84,70.68 H37.56 A2.76,2.76 0 0 1 37.56,65.16 Z" />
+</vector>
